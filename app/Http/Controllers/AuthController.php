@@ -23,7 +23,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->route('departments');
+        return redirect()->route('employees');
     }
 
     public function logout(Request $request): RedirectResponse

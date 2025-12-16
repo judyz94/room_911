@@ -16,6 +16,10 @@ class Employee extends Model
         'has_access',
     ];
 
+    protected $casts = [
+        'has_access' => 'boolean',
+    ];
+
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);

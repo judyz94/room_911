@@ -94,9 +94,7 @@ const submit = () => {
                         {{ error }}
                     </div>
                 </div>
-
             </div>
-
         </div>
     </AdminLayout>
 </template>

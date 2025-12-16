@@ -51,16 +51,6 @@ const user = computed(() => page.props.auth?.user)
                 <nav class="p-6 space-y-2">
 
                     <Link
-                        href="/departments"
-                        class="block px-4 py-2 rounded-lg font-medium transition"
-                        :class="$page.url.startsWith('/departments')
-                            ? 'bg-blue-100 text-blue-700'
-                            : 'text-gray-700 hover:bg-gray-100'"
-                    >
-                        Departments
-                    </Link>
-
-                    <Link
                         href="/employees"
                         class="block px-4 py-2 rounded-lg font-medium transition"
                         :class="$page.url.startsWith('/employees')
@@ -68,6 +58,16 @@ const user = computed(() => page.props.auth?.user)
                             : 'text-gray-700 hover:bg-gray-100'"
                     >
                         Employees
+                    </Link>
+
+                    <Link
+                        href="/departments"
+                        class="block px-4 py-2 rounded-lg font-medium transition"
+                        :class="$page.url.startsWith('/departments')
+                            ? 'bg-blue-100 text-blue-700'
+                            : 'text-gray-700 hover:bg-gray-100'"
+                    >
+                        Departments
                     </Link>
 
                     <Link
