@@ -16,6 +16,10 @@ class Employee extends Model
         'has_access',
     ];
 
+    protected $casts = [
+        'has_access' => 'boolean',
+    ];
+
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
@@ -24,5 +28,10 @@ class Employee extends Model
     public function accessLogs(): HasMany
     {
         return $this->hasMany(AccessLog::class);
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return trim("{$this->first_name} {$this->last_name}");
     }
 }

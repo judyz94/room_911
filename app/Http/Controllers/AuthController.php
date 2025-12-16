@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Auth\LoginUserRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,12 +11,9 @@ use Inertia\Response;
 
 class AuthController extends Controller
 {
-    public function login(Request $request): RedirectResponse
+    public function login(LoginUserRequest $request): RedirectResponse
     {
-        $credentials = $request->validate([
-            'email'    => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+        $credentials = $request->validated();
 
         if (!Auth::attempt($credentials)) {
             return back()->withErrors([
@@ -25,7 +23,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->route('departments');
+        return redirect()->route('employees');
     }
 
     public function logout(Request $request): RedirectResponse

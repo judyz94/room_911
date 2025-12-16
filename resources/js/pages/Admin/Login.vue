@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useForm } from '@inertiajs/vue3'
+import { router, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
     email: '',
@@ -8,6 +8,10 @@ const form = useForm({
 
 const submit = () => {
     form.post('/login')
+}
+
+const goToEmployeeAccess = () => {
+    router.visit('/room-911/access')
 }
 </script>
 
@@ -46,7 +50,7 @@ const submit = () => {
                         type="password"
                         placeholder="Password"
                         required
-                        class="w-full pl-5  py-3 border border-gray-300 rounded-xl
+                        class="w-full pl-5 py-3 border border-gray-300 rounded-xl
                    focus:outline-none focus:ring-2 focus:ring-blue-600
                    focus:border-blue-600 transition"
                     />
@@ -69,8 +73,21 @@ const submit = () => {
                 {{ form.errors.email }}
             </div>
 
-        </div>
+            <div class="my-6 flex items-center gap-3 text-gray-400 text-sm">
+                <div class="flex-1 h-px bg-gray-300"></div>
+                OR
+                <div class="flex-1 h-px bg-gray-300"></div>
+            </div>
 
+            <!-- Employee Access -->
+            <button
+                @click="goToEmployeeAccess"
+                class="w-full bg-gray-900 text-white py-3 rounded-xl
+                       font-semibold hover:bg-gray-800 transition"
+            >
+                Employee Access – ROOM 911
+            </button>
+        </div>
     </div>
 </template>
 

@@ -16,9 +16,9 @@ class AdminUserSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'admin@room911.test'],
             [
-                'name'     => 'Admin ROOM 911',
+                'name' => 'Admin ROOM 911',
                 'password' => Hash::make('12345678'),
-                'role'     => 'admin_room_911',
+                'role' => 'admin_room_911',
             ]
         );
     }

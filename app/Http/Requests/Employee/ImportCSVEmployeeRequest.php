@@ -3,9 +3,8 @@
 namespace App\Http\Requests\Employee;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class UpdateEmployeeRequest extends FormRequest
+class ImportCSVEmployeeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,17 +22,8 @@ class UpdateEmployeeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'internal_id' => [
-                'required',
-                'string',
-                Rule::unique('employees', 'internal_id')->ignore(
-                    $this->route('employee')->id
-                ),
-            ],
-            'first_name' => 'required|string|max:100',
-            'last_name' => 'required|string|max:100',
             'department_id' => 'required|exists:departments,id',
-            'has_access' => 'boolean'
+            'file' => 'required|file|mimes:csv,txt',
         ];
     }
 }
