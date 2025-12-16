@@ -11,22 +11,22 @@ use Inertia\Response;
 
 class RegisterController extends Controller
 {
+    public function store(RegisterUserRequest $request): RedirectResponse
+    {
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'admin_room_911',
+        ]);
+
+        return back()->with('success', 'Admin user created successfully.');
+    }
+
     public function create(): Response
     {
         return Inertia::render('Admin/Register', [
             'title' => 'Register Admin ROOM 911'
         ]);
-    }
-
-    public function store(RegisterUserRequest $request): RedirectResponse
-    {
-        User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
-            'role'     => 'admin_room_911',
-        ]);
-
-        return back()->with('success', 'Admin user created successfully.');
     }
 }
