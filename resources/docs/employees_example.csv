@@ -1,0 +1,11 @@
+internal_id,first_name,last_name,has_access
+EMP001,Juan,Perez,true
+EMP002,Ana,Gomez,false
+EMP003,Carlos,Ramirez,true
+EMP004,Laura,Morales,true
+EMP005,Andres,Lopez,false
+EMP006,Sofia,Martinez,true
+EMP007,Diego,Hernandez,false
+EMP008,Valentina,Ruiz,true
+EMP009,Pedro,Castaño,false
+EMP010,Camila,Restrepo,true
