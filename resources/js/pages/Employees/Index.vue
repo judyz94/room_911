@@ -44,6 +44,50 @@ const selectedEmployee = ref<Employee | null>(null)
 const fromDate = ref<string>('')
 const toDate = ref<string>('')
 
+const importDepartmentId = ref<number | null>(null)
+const csvFile = ref<File | null>(null)
+
+const importMessage = ref<string | null>(null)
+const importStatus = ref<'success' | 'error' | null>(null)
+const loading = ref(false)
+
+const onFileChange = (e: Event) => {
+    const target = e.target as HTMLInputElement
+    csvFile.value = target.files?.[0] ?? null
+}
+
+const importCsv = async () => {
+    importMessage.value = null
+
+    if (!importDepartmentId.value || !csvFile.value) {
+        importStatus.value = 'error'
+        importMessage.value = 'Please select a department and a CSV file.'
+        return
+    }
+
+    const formData = new FormData()
+    formData.append('department_id', String(importDepartmentId.value))
+    formData.append('file', csvFile.value)
+
+    loading.value = true
+
+    try {
+        const { data } = await axios.post('/api/employees/import-csv', formData)
+
+        importStatus.value = 'success'
+        importMessage.value =
+            data.message ?? 'Employees imported successfully.'
+
+        csvFile.value = null
+        await load()
+    } catch (error: any) {
+        importStatus.value = 'error'
+        importMessage.value =
+            error.response?.data?.message ?? 'Error importing employees.'
+    } finally {
+        loading.value = false
+    }
+}
 
 const edit = (employee: Employee): void => {
     editingId.value = employee.id
@@ -200,7 +244,7 @@ onMounted(load)
                             v-if="editingId"
                             type="button"
                             @click="resetForm"
-                            class="px-6 py-3 rounded-lg border border-gray-300
+                            class="px-6 py-2 rounded-lg border border-gray-300
                text-gray-700 font-medium hover:bg-gray-100 transition"
                         >
                             Cancel
@@ -209,8 +253,8 @@ onMounted(load)
                         <button
                             type="button"
                             @click="storeOrUpdate"
-                            class="bg-blue-600 text-white px-8 py-3 rounded-lg
-               font-semibold hover:bg-blue-700 transition"
+                            class="bg-blue-600 text-white px-6 py-2 rounded-lg
+             font-semibold hover:bg-blue-700 transition"
                         >
                             {{ editingId ? 'Update Employee' : 'Add Employee' }}
                         </button>
@@ -218,6 +262,52 @@ onMounted(load)
 
                 </form>
             </div>
+
+            <!-- CSV Import -->
+            <div class="bg-white rounded-xl shadow p-8 w-full mb-8">
+                <h2 class="font-semibold mb-4">Import Employees (CSV)</h2>
+
+                <div class="flex gap-4 items-center">
+                    <select
+                        v-model="importDepartmentId"
+                        class="px-4 py-2 border rounded-lg"
+                    >
+                        <option :value="null">Select department</option>
+                        <option v-for="d in departments" :key="d.id" :value="d.id">
+                            {{ d.name }}
+                        </option>
+                    </select>
+
+                    <input
+                        type="file"
+                        accept=".csv"
+                        @change="onFileChange"
+                        class="text-sm"
+                    />
+
+                    <button
+                        @click="importCsv"
+                        :disabled="loading"
+                        class="bg-blue-600 disabled:bg-gray-400 text-white px-6 py-2 rounded-lg font-semibold ml-auto"
+                    >
+                        {{ loading ? 'Importing...' : 'Import CSV' }}
+                    </button>
+                </div>
+
+                <!-- Confirmation message -->
+                <div
+                    v-if="importMessage"
+                    :class="[
+            'mt-6 text-sm font-semibold p-4 rounded-xl border',
+            importStatus === 'success'
+                ? 'bg-green-50 text-green-700 border-green-200'
+                : 'bg-red-50 text-red-700 border-red-200'
+        ]"
+                >
+                    {{ importMessage }}
+                </div>
+            </div>
+
 
             <!-- Search Bar -->
             <div class="bg-white rounded-xl shadow p-6 w-full mb-6">
@@ -377,7 +467,6 @@ onMounted(load)
                     </tbody>
                 </table>
             </div>
-
         </div>
     </AdminLayout>
 </template>
