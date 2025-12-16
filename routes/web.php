@@ -13,14 +13,14 @@ Route::get('/', [AuthController::class, 'form']);
 Route::get('/login', [AuthController::class, 'form'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::get('/room-911/access', [AccessController::class, 'form']);
+Route::post('/room-911/access', [AccessController::class, 'attempt']);
+
 Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('/user/register', [RegisterController::class, 'create'])->name('register');
     Route::post('/user/register', [RegisterController::class, 'store']);
-
-    Route::get('/room-911/access', [AccessController::class, 'form']);
-    Route::post('/room-911/access', [AccessController::class, 'attempt']);
 
     Route::get('/departments', [DepartmentController::class, 'view'])->name('departments');
 

@@ -25,4 +25,9 @@ class Employee extends Model
     {
         return $this->hasMany(AccessLog::class);
     }
+
+    public function getFullNameAttribute(): string
+    {
+        return trim("{$this->first_name} {$this->last_name}");
+    }
 }

@@ -15,6 +15,7 @@ class AccessLog extends Model
     ];
 
     protected $casts = [
+        'access_granted' => 'boolean',
         'attempted_at' => 'datetime'
     ];
 

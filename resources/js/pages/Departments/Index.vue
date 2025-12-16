@@ -11,17 +11,6 @@ interface Department {
 const departments = ref<Department[]>([])
 const name = ref<string>('')
 
-const api = axios.create({
-    headers: {
-        'X-Inertia': false
-    }
-})
-
-/*const load = async () => {
-    const res = await api.get('/api/departments')
-    departments.value = res.data.data
-}*/
-
 const load = async (): Promise<void> => {
     const res = await axios.get('/api/departments')
     departments.value = res.data.data
