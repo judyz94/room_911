@@ -14,6 +14,7 @@ interface Employee {
     first_name: string
     last_name: string
     has_access: boolean
+    access_logs_count: string
     department: Department
 }
 
@@ -25,10 +26,24 @@ interface EmployeeForm {
     has_access: boolean
 }
 
+interface AccessLog {
+    id: number
+    access_granted: boolean
+    attempted_at: string
+}
+
 const employees = ref<Employee[]>([])
 const departments = ref<Department[]>([])
 const successMessage = ref<string>('')
 const editingId = ref<number | null>(null)
+const search = ref<string>('')
+const departmentFilter = ref<number | null>(null)
+
+const accessLogs = ref<AccessLog[]>([])
+const selectedEmployee = ref<Employee | null>(null)
+const fromDate = ref<string>('')
+const toDate = ref<string>('')
+
 
 const edit = (employee: Employee): void => {
     editingId.value = employee.id
@@ -66,6 +81,22 @@ const storeOrUpdate = async (): Promise<void> => {
     await load()
 }
 
+const loadAccessLogs = async (employee: Employee): Promise<void> => {
+    selectedEmployee.value = employee
+
+    const res = await axios.get(
+        `/employees/${employee.id}/access-logs`,
+        {
+            params: {
+                from: fromDate.value,
+                to: toDate.value
+            }
+        }
+    )
+
+    accessLogs.value = res.data.data
+}
+
 const form = ref<EmployeeForm>({
     internal_id: '',
     first_name: '',
@@ -76,7 +107,12 @@ const form = ref<EmployeeForm>({
 
 const load = async (): Promise<void> => {
     const [empRes, depRes] = await Promise.all([
-        axios.get('/api/employees'),
+        axios.get('/api/employees', {
+            params: {
+                search: search.value,
+                department_id: departmentFilter.value
+            }
+        }),
         axios.get('/api/departments')
     ])
 
@@ -178,10 +214,40 @@ onMounted(load)
                         >
                             {{ editingId ? 'Update Employee' : 'Add Employee' }}
                         </button>
-
                     </div>
 
                 </form>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="bg-white rounded-xl shadow p-6 w-full mb-6">
+                <div class="grid grid-cols-3 gap-4">
+
+                    <input
+                        v-model="search"
+                        @input="load"
+                        placeholder="Search by ID, name or last name"
+                        class="col-span-2 px-4 py-3 border border-gray-300 rounded-lg
+                   focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+
+                    <select
+                        v-model="departmentFilter"
+                        @change="load"
+                        class="px-4 py-3 border border-gray-300 rounded-lg
+                   focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    >
+                        <option :value="null">All departments</option>
+                        <option
+                            v-for="d in departments"
+                            :key="d.id"
+                            :value="d.id"
+                        >
+                            {{ d.name }}
+                        </option>
+                    </select>
+
+                </div>
             </div>
 
             <!-- List Card -->
@@ -193,6 +259,7 @@ onMounted(load)
                         <th class="py-2 text-left">Internal ID</th>
                         <th class="py-2 text-left">Name</th>
                         <th class="py-2 text-left">Department</th>
+                        <th class="py-2 text-left">Access Attempts</th>
                         <th class="py-2 text-left">Access</th>
                         <th class="py-2"></th>
                     </tr>
@@ -209,6 +276,15 @@ onMounted(load)
                         </td>
                         <td class="py-3">{{ e.department.name }}</td>
                         <td class="py-3">
+                            <span
+                                class="inline-flex items-center justify-center px-3 py-1
+                                       rounded-full text-xs font-semibold
+                                       bg-gray-100 text-gray-700"
+                            >
+                                {{ e.access_logs_count }}
+                            </span>
+                        </td>
+                        <td class="py-3">
                                 <span
                                     :class="e.has_access
                                         ? 'text-green-600 font-semibold'
@@ -219,6 +295,13 @@ onMounted(load)
                         </td>
 
                         <td class="py-3 text-right flex justify-end gap-4">
+
+                            <button
+                                @click="loadAccessLogs(e)"
+                                class="text-gray-600 hover:underline font-medium"
+                            >
+                                History
+                            </button>
 
                             <button
                                 @click="edit(e)"
@@ -238,7 +321,61 @@ onMounted(load)
                     </tr>
                     </tbody>
                 </table>
+            </div>
 
+            <div
+                v-if="selectedEmployee"
+                class="bg-white rounded-xl shadow p-6 w-full mt-8"
+            >
+                <h2 class="text-lg font-bold mb-4">
+                    Access history – {{ selectedEmployee.first_name }} {{ selectedEmployee.last_name }}
+                </h2>
+
+                <div class="flex gap-4 mb-4">
+                    <input
+                        type="date"
+                        v-model="fromDate"
+                        @change="loadAccessLogs(selectedEmployee)"
+                        class="px-3 py-2 border rounded-lg"
+                    />
+                    <input
+                        type="date"
+                        v-model="toDate"
+                        @change="loadAccessLogs(selectedEmployee)"
+                        class="px-3 py-2 border rounded-lg"
+                    />
+                </div>
+
+                <table class="w-full text-sm">
+                    <thead class="border-b">
+                    <tr>
+                        <th class="py-2 text-left">#</th>
+                        <th class="py-2 text-left">Date</th>
+                        <th class="py-2 text-left">Result</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr
+                        v-for="(log, index) in accessLogs"
+                        :key="log.id"
+                        class="border-b"
+                    >
+                        <td class="py-2 text-gray-500 font-mono">
+                            {{ index + 1 }}
+                        </td>
+                        <td class="py-2">{{ log.attempted_at }}</td>
+                        <td class="py-2">
+                <span
+                    :class="log.access_granted
+                        ? 'text-green-600 font-semibold'
+                        : 'text-red-600 font-semibold'"
+                >
+                    {{ log.access_granted ? 'Granted' : 'Denied' }}
+                </span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
 
         </div>

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccessController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\EmployeeAccessLogController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +26,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/departments', [DepartmentController::class, 'view'])->name('departments');
 
     Route::get('/employees', fn () => Inertia::render('Employees/Index'));
+    Route::get('employees/{employee}/access-logs', [EmployeeAccessLogController::class, 'index']);
 
     Route::resource('api/departments', DepartmentController::class)->except(['create', 'edit', 'show']);
     Route::resource('api/employees', EmployeeController::class)->except(['create', 'edit', 'show']);
