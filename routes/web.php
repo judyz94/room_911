@@ -29,6 +29,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('employees/{employee}/access-logs', [EmployeeAccessLogController::class, 'index']);
 
     Route::post('api/employees/import-csv', [EmployeeController::class, 'importCsv']);
+    Route::get('api/employees/{employee}/access-logs/pdf', [EmployeeController::class, 'downloadPdf']);
     Route::resource('api/employees', EmployeeController::class)->except(['create', 'edit', 'show']);
 });
 

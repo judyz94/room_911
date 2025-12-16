@@ -6,8 +6,10 @@ use App\Http\Requests\Employee\ImportCSVEmployeeRequest;
 use App\Http\Requests\Employee\StoreEmployeeRequest;
 use App\Http\Requests\Employee\UpdateEmployeeRequest;
 use App\Http\Resources\EmployeeResource;
+use App\Models\AccessLog;
 use App\Models\Employee;
 use App\Traits\ApiResponse;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -110,5 +112,23 @@ class EmployeeController extends Controller
             'created' => $created,
             'errors' => $errors,
         ]);
+    }
+
+    public function downloadPdf(Request $request, Employee $employee): \Illuminate\Http\Response
+    {
+        $logs = AccessLog::where('employee_id', $employee->id)
+            ->when($request->from, fn ($q) => $q->whereDate('attempted_at', '>=', $request->from))
+            ->when($request->to, fn ($q) => $q->whereDate('attempted_at', '<=', $request->to))
+            ->orderByDesc('attempted_at')
+            ->get();
+
+        $pdf = Pdf::loadView('pdf.employee-access-logs', [
+            'employee' => $employee,
+            'logs' => $logs,
+        ]);
+
+        return $pdf->download(
+            "ROOM_911_access_logs_{$employee->internal_id}.pdf"
+        );
     }
 }

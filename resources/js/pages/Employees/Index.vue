@@ -89,6 +89,10 @@ const importCsv = async () => {
     }
 }
 
+const downloadPdf = (id: number) => {
+    window.open(`/api/employees/${id}/access-logs/pdf`, '_blank')
+}
+
 const edit = (employee: Employee): void => {
     editingId.value = employee.id
 
@@ -417,9 +421,18 @@ onMounted(load)
                 v-if="selectedEmployee"
                 class="bg-white rounded-xl shadow p-6 w-full mt-8"
             >
-                <h2 class="text-lg font-bold mb-4">
-                    Access history – {{ selectedEmployee.first_name }} {{ selectedEmployee.last_name }}
-                </h2>
+                <div class="flex items-center mb-4">
+                    <h2 class="text-lg font-bold">
+                        Access history – {{ selectedEmployee.first_name }} {{ selectedEmployee.last_name }}
+                    </h2>
+
+                    <button
+                        @click="downloadPdf(selectedEmployee.id)"
+                        class="ml-auto bg-gray-800 text-white px-4 py-2 rounded-lg text-sm"
+                    >
+                        Download PDF
+                    </button>
+                </div>
 
                 <div class="flex gap-4 mb-4">
                     <input
