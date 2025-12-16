@@ -37,7 +37,6 @@ const submit = () => {
             </div>
 
             <div class="bg-white rounded-xl shadow p-8 w-full">
-
                 <form @submit.prevent="submit" class="space-y-6">
 
                     <input
@@ -82,7 +81,6 @@ const submit = () => {
                             Create Admin
                         </button>
                     </div>
-
                 </form>
 
                 <div

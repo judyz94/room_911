@@ -15,24 +15,24 @@ class EmployeeSeeder extends Seeder
     {
         $department = Department::first();
 
-        if (! $department) {
+        if (!$department) {
             return;
         }
 
         Employee::create([
-            'first_name'  => 'John',
-            'last_name'   => 'Doe',
+            'first_name' => 'John',
+            'last_name' => 'Doe',
             'internal_id' => 'EMP-001',
             'department_id' => $department->id,
-            'has_access'  => true,
+            'has_access' => true,
         ]);
 
         Employee::create([
-            'first_name'  => 'Jane',
-            'last_name'   => 'Smith',
+            'first_name' => 'Jane',
+            'last_name' => 'Smith',
             'internal_id' => 'EMP-002',
             'department_id' => $department->id,
-            'has_access'  => false,
+            'has_access' => false,
         ]);
     }
 }

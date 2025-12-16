@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('internal_id')->unique();
             $table->string('first_name');
             $table->string('last_name');
-            $table->foreignId('department_id')->constrained();
+            $table->foreignId('department_id')->constrained()->onDelete('cascade');
             $table->boolean('has_access')->default(false);
             $table->timestamps();
         });

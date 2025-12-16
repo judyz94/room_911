@@ -35,9 +35,7 @@ const submit = async () => {
 
 <template>
     <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
-
         <div class="w-full max-w-md bg-white/95 backdrop-blur shadow-2xl rounded-2xl p-8">
-
             <h1 class="text-2xl font-extrabold text-center mb-1 tracking-wide">
                 ROOM 911
             </h1>

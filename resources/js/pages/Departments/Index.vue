@@ -88,7 +88,7 @@ onMounted(load)
                             v-if="editingId"
                             type="button"
                             @click="resetForm"
-                            class="px-6 py-3 rounded-lg border border-gray-300
+                            class="px-6 py-2 rounded-lg border border-gray-300
                                    text-gray-700 font-semibold hover:bg-gray-100 transition"
                         >
                             Cancel
@@ -96,13 +96,12 @@ onMounted(load)
 
                         <button
                             type="submit"
-                            class="bg-blue-600 text-white px-8 py-3 rounded-lg
+                            class="bg-blue-600 text-white px-6 py-2 rounded-lg
                                    font-semibold hover:bg-blue-700 transition"
                         >
                             {{ editingId ? 'Update Department' : 'Create Department' }}
                         </button>
                     </div>
-
                 </form>
             </div>
 

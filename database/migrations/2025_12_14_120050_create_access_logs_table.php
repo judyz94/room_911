@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('access_logs', function (Blueprint $table) {
             $table->id();
             $table->string('internal_id');
-            $table->foreignId('employee_id')->nullable()->constrained();
+            $table->foreignId('employee_id')->nullable()->constrained()->onDelete('cascade');
             $table->boolean('access_granted');
             $table->timestamp('attempted_at');
             $table->timestamps();
